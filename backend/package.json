@@ -1,0 +1,48 @@
+{
+  "name": "ai-marketplace-backend",
+  "version": "1.0.0",
+  "description": "Backend API for AI-Enabled Farmer-Investor Marketplace",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npx prisma generate && nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "npx prisma migrate dev --name init",
+    "generate": "npx prisma generate"
+  },
+  "keywords": [
+    "marketplace",
+    "ai",
+    "agriculture",
+    "investment",
+    "smallholder",
+    "farmers",
+    "investors"
+  ],
+  "author": "Joseph mugo",
+  "license": "MIT",
+  "dependencies": {
+    "@google-ai/generativelanguage": "^3.3.0",
+    "@google/genai": "^1.12.0",
+    "@google/generative-ai": "^0.24.1",
+    "@prisma/client": "^6.12.0",
+    "axios": "^1.6.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.2",
+    "nodemailer": "^6.9.8",
+    "pg": "^8.16.3",
+    "pg-hstore": "^2.3.4",
+    "socket.io": "^4.8.1",
+    "stripe": "^14.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prisma": "^6.12.0"
+  }
+}

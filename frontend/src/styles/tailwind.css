@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Radial progress bars for AI insights */
+.radial-progress {
+  --value: 0;
+  --size: 6rem;
+  --thickness: 8px;
+  
+  @apply rounded-full;
+  @apply bg-transparent;
+  @apply border-4;
+  @apply border-gray-200;
+  @apply inline-grid;
+  @apply place-items-center;
+  
+  width: var(--size);
+  height: var(--size);
+  background: 
+    radial-gradient(closest-side, white 80%, transparent 80% 100%),
+    conic-gradient(currentColor calc(var(--value) * 1%), transparent 0);
+}
+
+.radial-progress::before {
+  @apply text-xl;
+  @apply font-bold;
+  content: attr(style);
+}

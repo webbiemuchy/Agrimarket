@@ -1,0 +1,278 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  farmer
+  investor
+  admin
+}
+
+enum ProjectStatus {
+  pending
+  approved
+  funded
+  in_progress
+  completed
+  rejected
+}
+
+enum AnalysisStatus {
+  pending
+  in_progress
+  completed
+  failed
+}
+
+enum InvestmentStatus {
+  pending
+  completed
+  refunded
+  failed
+}
+
+enum TransactionType {
+  investment
+  payout
+  refund
+  fee
+}
+
+enum TransactionStatus {
+  pending
+  completed
+  failed
+  cancelled
+}
+
+enum EscrowStatus {
+  held
+  released
+  refunded
+}
+
+enum MilestoneStatus {
+  pending
+  in_progress
+  completed
+  delayed
+}
+
+model User {
+  id              String        @id @default(uuid())
+  email           String        @unique
+  password_hash   String
+  first_name      String
+  last_name       String
+  phone           String?
+  user_type       UserType
+  profile_image   String?
+  location        String?
+  bio             String?
+  is_verified     Boolean       @default(false)
+  is_active       Boolean       @default(true)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  // Relations
+  projects        Project[]
+  investments     Investment[]
+  notifications   Notification[]
+  publicKey        String?
+  sentMessages    Message[]     @relation("sentMessages")
+  receivedMessages Message[]    @relation("receivedMessages")
+
+  @@index([email], name: "idx_users_email")
+  @@index([user_type], name: "idx_users_type")
+}
+
+model Project {
+  id                         String             @id @default(uuid())
+  title                      String
+  description                String
+  budget                     Float
+  location                   String
+  expected_yield             String?
+  project_type               String?
+  duration_months            Int?
+  farm_size                  Float?
+  soil_data                  Json?
+  status                     ProjectStatus      @default(pending)
+  ai_risk_score              Float?
+  ai_roi_score               Float?
+  climate_risk_level         String?
+  climate_warnings           String?
+  mitigation_recommendations String?
+  funding_goal               Float
+  current_funding            Float             @default(0)
+  funding_deadline           DateTime?
+  images                     String[]
+  documents                  String[]
+  analysis_status            AnalysisStatus    @default(pending)
+  created_at                 DateTime          @default(now())
+  updated_at                 DateTime          @updatedAt
+
+  
+  ai_analysis                AiAnalysis?       @relation("ProjectToAnalysis")
+  climate_data               ClimateData?      @relation("ProjectToClimate")
+
+ 
+  farmer_id                  String
+  farmer                     User               @relation(fields: [farmer_id], references: [id])
+  investments                Investment[]
+  milestones                 ProjectMilestone[]
+  messages                   Message[]
+
+  @@index([farmer_id], name: "idx_projects_farmer")
+  @@index([status], name: "idx_projects_status")
+}
+
+model AiAnalysis {
+  id                String   @id @default(uuid())
+  project_id        String   @unique
+  risk_score        Float
+  roi_score         Float
+  risk_factors      String   
+  strengths         String
+  recommendations   String
+  market_analysis   String
+  feasibility       String
+  expected_roi      Float
+  confidence_level  Float
+  created_at        DateTime @default(now())      
+  conclusion                 String?
+  risk_score_explanation     String?
+  roi_score_explanation      String?
+  confidence_level_explanation String? 
+  expected_roi_score_explanation  String?   
+
+  
+  project           Project   @relation("ProjectToAnalysis", fields: [project_id], references: [id], onDelete: Cascade)
+}
+
+model ClimateData {
+  id                String   @id @default(uuid())
+  project_id        String   @unique
+  risk_level        String
+  risk_factors      String   
+  recommendations   String   
+  current_weather   Json
+  forecast          Json?
+  soil_data         Json
+  data_limitation   String?
+  created_at        DateTime @default(now())
+
+  
+  project           Project   @relation("ProjectToClimate", fields: [project_id], references: [id], onDelete: Cascade)
+}
+
+model Investment {
+  id               String      @id @default(uuid())
+  amount           Float
+  investment_date  DateTime    @default(now())
+  status           InvestmentStatus @default(pending)
+  payment_method   String?
+  payment_reference String?
+  expected_return  Float?
+  actual_return    Float?
+  return_date      DateTime?
+  created_at       DateTime    @default(now())
+  updated_at       DateTime    @updatedAt
+
+  investor_id      String
+  investor         User        @relation(fields: [investor_id], references: [id])
+  project_id       String
+  project          Project     @relation(fields: [project_id], references: [id])
+  transactions     Transaction[]
+  escrow           Escrow?
+
+  @@index([investor_id], name: "idx_investments_investor")
+  @@index([project_id], name: "idx_investments_project")
+}
+
+model Transaction {
+  id                      String    @id @default(uuid())
+  transaction_type        TransactionType
+  amount                  Float
+  currency                String    @default("USD")
+  payment_gateway         String?
+  gateway_transaction_id  String?
+  status                  TransactionStatus @default(pending)
+  metadata                Json?
+  created_at              DateTime  @default(now())
+  updated_at              DateTime  @updatedAt
+
+  investment_id           String?
+  investment              Investment? @relation(fields: [investment_id], references: [id])
+
+  @@index([investment_id], name: "idx_transactions_investment")
+}
+
+model ProjectMilestone {
+  id               String      @id @default(uuid())
+  title            String
+  description      String?
+  target_date      DateTime?
+  completion_date  DateTime?
+  status           MilestoneStatus @default(pending)
+  evidence_urls    String[]
+  created_at       DateTime    @default(now())
+  updated_at       DateTime    @updatedAt
+
+  project_id       String
+  project          Project     @relation(fields: [project_id], references: [id])
+
+  @@index([project_id], name: "idx_milestones_project")
+}
+
+model Escrow {
+  id                 String      @id @default(uuid())
+  amount             Float
+  status             EscrowStatus @default(held)
+  release_conditions String?
+  release_date       DateTime?
+  created_at         DateTime    @default(now())
+  updated_at         DateTime    @updatedAt
+
+  investment_id      String      @unique
+  investment         Investment  @relation(fields: [investment_id], references: [id])
+
+  @@index([investment_id], name: "idx_escrow_investment")
+}
+
+model Notification {
+  id          String    @id @default(uuid())
+  title       String
+  message     String
+  type        String
+  is_read     Boolean   @default(false)
+  metadata    Json?
+  created_at  DateTime  @default(now())
+
+  user_id     String
+  user        User      @relation(fields: [user_id], references: [id])
+
+  @@index([user_id], name: "idx_notifications_user")
+}
+
+model Message {
+  id            String   @id @default(uuid())
+  sender_id     String
+  recipient_id  String
+  project_id    String
+  content       String
+  created_at    DateTime @default(now())
+
+  sender        User     @relation("sentMessages", fields: [sender_id], references: [id])
+  recipient     User     @relation("receivedMessages", fields: [recipient_id], references: [id])
+  project       Project  @relation(fields: [project_id], references: [id])
+
+  @@index([project_id], name: "idx_messages_project")
+}
