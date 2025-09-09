@@ -24,7 +24,7 @@ A comprehensive e-commerce platform that connects smallholder farmers in Africa 
 - **Data Validation**: Comprehensive input validation and sanitization
 - **Error Handling**: Robust error handling throughout the application
 
-## 🏗️ Architecture
+
 
 ### Technology Stack
 - **Frontend**: Vite+React.js  with Tailwind CSS
@@ -37,7 +37,7 @@ A comprehensive e-commerce platform that connects smallholder farmers in Africa 
 
 
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before running this application, ensure you have the following installed:
 
