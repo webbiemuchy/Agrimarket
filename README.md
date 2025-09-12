@@ -79,6 +79,20 @@ npm install
 
 ```
 
+#### Prisma: Generate Client and Apply Migrations
+After configuring your database connection in the `.env` file (`DATABASE_URL=...`), generate the Prisma client and sync the schema with your database:
+
+```bash
+# from the backend directory
+npx prisma generate
+
+# optional but recommended on first setup to create tables
+npx prisma migrate dev --name init
+
+# optional: seed two admin users (password 121212)
+npm run seed
+```
+
 
 ### 5. Frontend Setup
 ```bash
@@ -94,6 +108,7 @@ npm install
 #### Start Backend Server
 ```bash
 cd backend
+npm start
 npm run dev
 
 ```
@@ -101,7 +116,7 @@ npm run dev
 #### Start Frontend Development Server
 ```bash
 cd frontend
-npm start
+npm run dev
 
 ```
 
