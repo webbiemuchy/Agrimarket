@@ -4,11 +4,18 @@ import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 
 const CheckoutModal = ({ proposal, onClose }) => {
-  const [amount, setAmount] = useState(proposal.details.fundingGoal - proposal.details.funded);
+  const remainingInitial = Math.max(
+    0,
+    (proposal.funding_goal || 0) - (proposal.current_funding || 0)
+  );
+  const [amount, setAmount] = useState(remainingInitial);
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   
-  const remaining = proposal.details.fundingGoal - proposal.details.funded;
+  const remaining = Math.max(
+    0,
+    (proposal.funding_goal || 0) - (proposal.current_funding || 0)
+  );
   
   const handleSubmit = () => {
     setIsProcessing(true);
@@ -17,7 +24,10 @@ const CheckoutModal = ({ proposal, onClose }) => {
       setIsProcessing(false);
       onClose();
       
-      window.location.href = `/receipt/TX-${Math.floor(100000 + Math.random() * 900000)}`;
+      const txId = `TX-${Math.floor(100000 + Math.random() * 900000)}`;
+      window.location.href = `/receipt/${txId}?projectId=${encodeURIComponent(
+        proposal.id
+      )}`;
     }, 2000);
   };
   
@@ -44,7 +54,7 @@ const CheckoutModal = ({ proposal, onClose }) => {
               <input
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => setAmount(Number(e.target.value))}
                 min="10"
                 max={remaining}
                 className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500"

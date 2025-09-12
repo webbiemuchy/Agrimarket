@@ -56,8 +56,8 @@ const Header = () => {
            
             <div className="flex items-center">
               <Link to="/" className="flex items-center text-xl font-bold">
-                <img src="/logo.svg" alt="AgriMarket" className="h-8 mr-2" />
-                AgriMarket
+                <img src="/agri-logo.svg" alt="AgriMarket" className="h-8 mr-2" />
+                <span className="tracking-tight">AgriMarket</span>
               </Link>
             </div>
 
@@ -140,7 +140,7 @@ const Header = () => {
                 {user ? (
                   <>
                     <span className="text-xs bg-emerald-800 px-2 py-1 rounded-full">
-                      {user.userType}
+                      {user.role}
                     </span>
                     <button
                       onClick={handleLogout}

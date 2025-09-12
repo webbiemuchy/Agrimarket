@@ -168,7 +168,7 @@ async function getProjects(req, res) {
       ];
     }
 
-    const [projects, total] = await Promise.all([
+    const [rawProjects, total] = await Promise.all([
       prisma.project.findMany({
         where,
         include: {
@@ -180,6 +180,7 @@ async function getProjects(req, res) {
               location: true,
             },
           },
+          ai_analysis: true,
         },
         orderBy: { [sortBy]: sortOrder },
         take: parseInt(limit, 10),
@@ -187,6 +188,14 @@ async function getProjects(req, res) {
       }),
       prisma.project.count({ where }),
     ]);
+
+    const projects = rawProjects.map((p) => {
+      return {
+        ...p,
+        ai_risk_score: p.ai_risk_score ?? (p.ai_analysis ? p.ai_analysis.risk_score : null),
+        ai_roi_score: p.ai_roi_score ?? (p.ai_analysis ? p.ai_analysis.roi_score : null),
+      };
+    });
 
     return res.json({
       success: true,

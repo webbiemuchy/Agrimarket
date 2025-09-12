@@ -441,6 +441,7 @@ const AdminDashboard = () => {
       {selectedProjectId && (
         <AdminProjectModal
           projectId={selectedProjectId}
+          onStatusChange={() => fetchData()}
           onClose={() => setSelectedProjectId(null)}
         />
       )}

@@ -90,6 +90,8 @@ async function runAnalysis(projectId, user) {
       where: { id: projectId },
       data: {
         analysis_status: "completed",
+        ai_risk_score: aiResults.riskScore,
+        ai_roi_score: aiResults.roiScore,
       }
     });
   } catch (error) {

@@ -1,10 +1,12 @@
 import { CheckCircle, Download, ArrowLeft } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 
 const ReceiptPage = () => {
-  const { paymentId } = useParams();
+  const { id: paymentId } = useParams();
+  const [searchParams] = useSearchParams();
+  const projectId = searchParams.get('projectId');
   
   // Mock data 
   const payment = {
@@ -77,15 +79,28 @@ const ReceiptPage = () => {
           <Button 
             variant="primary"
             className="flex items-center"
+            onClick={() => {
+              const blob = new Blob([
+                `Receipt\nTransaction: ${payment.transactionId}\nAmount: $${payment.amount}\nProject: ${payment.project.title}\nStatus: ${payment.status}\nDate: ${payment.date} ${payment.time}`
+              ], { type: 'text/plain' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `${payment.transactionId}-receipt.txt`;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              URL.revokeObjectURL(url);
+            }}
           >
             <Download size={18} className="mr-2" />
-            Download Receipt (PDF)
+            Download Receipt
           </Button>
           
           <Button 
             variant="outline"
             as={Link}
-            to={`/proposals/${payment.project.id}`}
+            to={`/proposals/${projectId || payment.project.id}`}
           >
             View Project
           </Button>

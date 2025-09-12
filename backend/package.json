@@ -8,7 +8,8 @@
     "dev": "npx prisma generate && nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "npx prisma migrate dev --name init",
-    "generate": "npx prisma generate"
+    "generate": "npx prisma generate",
+    "seed": "node prisma/seed.js"
   },
   "keywords": [
     "marketplace",

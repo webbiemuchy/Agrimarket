@@ -8,9 +8,11 @@ const AppShell = ({ children }) => {
       
       <Header />
 
-     
+      {/* Fixed header offset */}
+      <div className="h-16" />
+
       <main className="flex-1 p-4 md:p-6 overflow-auto">
-        <div className=" top-10 max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {children}
         </div>
       </main>

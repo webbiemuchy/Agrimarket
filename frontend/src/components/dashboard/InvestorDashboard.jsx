@@ -27,56 +27,56 @@ const InvestorDashboard = ({ investments = [] }) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 mt-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Investor Dashboard</h1>
-        <p className="text-gray-600">Track your agricultural investments</p>
+        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Investor Dashboard</h1>
+        <p className="text-gray-600">Track performance and manage your agricultural investments</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex justify-between">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="p-5 bg-gradient-to-br from-emerald-50 to-white border border-emerald-100">
+          <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-600">Total Investments</p>
-              <p className="text-2xl font-bold">{stats.totalInvestments}</p>
+              <p className="text-xs uppercase tracking-wide text-emerald-700">Total Investments</p>
+              <p className="text-3xl font-bold text-emerald-900 mt-1">{stats.totalInvestments}</p>
             </div>
-            <div className="bg-emerald-100 text-emerald-600 p-3 rounded-full">
+            <div className="bg-emerald-100 text-emerald-700 p-3 rounded-full">
               <PieChart size={20} />
             </div>
           </div>
         </Card>
         
-        <Card className="p-4">
-          <div className="flex justify-between">
+        <Card className="p-5 bg-gradient-to-br from-blue-50 to-white border border-blue-100">
+          <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-600">Total Invested</p>
-              <p className="text-2xl font-bold">${stats.totalInvested.toLocaleString()}</p>
+              <p className="text-xs uppercase tracking-wide text-blue-700">Total Invested</p>
+              <p className="text-3xl font-bold text-blue-900 mt-1">${stats.totalInvested.toLocaleString()}</p>
             </div>
-            <div className="bg-blue-100 text-blue-600 p-3 rounded-full">
+            <div className="bg-blue-100 text-blue-700 p-3 rounded-full">
               <DollarSign size={20} />
             </div>
           </div>
         </Card>
         
-        <Card className="p-4">
-          <div className="flex justify-between">
+        <Card className="p-5 bg-gradient-to-br from-purple-50 to-white border border-purple-100">
+          <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-600">Expected Returns</p>
-              <p className="text-2xl font-bold">${stats.expectedReturns.toLocaleString()}</p>
+              <p className="text-xs uppercase tracking-wide text-purple-700">Expected Returns</p>
+              <p className="text-3xl font-bold text-purple-900 mt-1">${stats.expectedReturns.toLocaleString()}</p>
             </div>
-            <div className="bg-purple-100 text-purple-600 p-3 rounded-full">
+            <div className="bg-purple-100 text-purple-700 p-3 rounded-full">
               <TrendingUp size={20} />
             </div>
           </div>
         </Card>
         
-        <Card className="p-4">
-          <div className="flex justify-between">
+        <Card className="p-5 bg-gradient-to-br from-green-50 to-white border border-green-100">
+          <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm text-gray-600">Actual Returns</p>
-              <p className="text-2xl font-bold">${stats.actualReturns.toLocaleString()}</p>
+              <p className="text-xs uppercase tracking-wide text-green-700">Actual Returns</p>
+              <p className="text-3xl font-bold text-green-900 mt-1">${stats.actualReturns.toLocaleString()}</p>
             </div>
-            <div className="bg-green-100 text-green-600 p-3 rounded-full">
+            <div className="bg-green-100 text-green-700 p-3 rounded-full">
               <ArrowUpRight size={20} />
             </div>
           </div>
@@ -91,7 +91,7 @@ const InvestorDashboard = ({ investments = [] }) => {
 
         <Card className="p-6">
           <h2 className="text-xl font-bold mb-4">ROI Performance</h2>
-          <div className="h-64">
+          <div className="h-64 flex items-center justify-center text-gray-400">
             <BarChart />
           </div>
         </Card>

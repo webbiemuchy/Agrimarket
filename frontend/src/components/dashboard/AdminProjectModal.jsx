@@ -85,7 +85,9 @@ export default function AdminProjectModal({
     try {
       await updateProjectStatus(projectId, decision);
       showNotification("Success", `Proposal ${decision}`, "success");
-      onStatusChange();
+      if (typeof onStatusChange === "function") {
+        onStatusChange();
+      }
       onClose();
     } catch (e) {
       console.error(e);
