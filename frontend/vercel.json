@@ -1,0 +1,10 @@
+{
+  "env": {
+    "VITE_API_BASE_URL": "https://your-backend-app.onrender.com"
+  },
+  "build": {
+    "env": {
+      "VITE_API_BASE_URL": "https://your-backend-app.onrender.com"
+    }
+  }
+}
