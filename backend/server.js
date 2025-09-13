@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -17,42 +16,27 @@ const aiRouter = require("./routes/ai");
 const notificationRoutes = require("./routes/notifications");
 const geocodeRoutes = require("./routes/geocode");
 const chatRoutes = require("./routes/chat");
-const userRoutes = require('./routes/user');
+const userRoutes = require("./routes/user");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS Configuration
-const allowedOrigins = [
-  'https://agrimarket-khaa.vercel.app', // Production Vercel
-  'http://localhost:3000', // Local frontend
-  'http://localhost:5173', // Vite dev server
-  process.env.FRONTEND_URL // From environment variable
-].filter(Boolean);
-
-app.use(helmet());
+// ✅ Relaxed CORS (allow any origin)
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps, Postman, etc.)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log('Blocked by CORS:', origin);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: true, // Reflects request origin
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   })
 );
+
+app.use(helmet());
 app.use(morgan("combined"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+// Log every request
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
@@ -80,6 +64,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// 404 handler
 app.use("*", (req, res) => {
   res.status(404).json({
     success: false,
@@ -87,6 +72,7 @@ app.use("*", (req, res) => {
   });
 });
 
+// Global error handler
 app.use((error, req, res, next) => {
   console.error("Global error handler:", error);
   res.status(error.status || 500).json({
@@ -98,11 +84,11 @@ app.use((error, req, res, next) => {
 
 const server = http.createServer(app);
 
-// Socket.io Configuration
+// Socket.io setup
 const io = new Server(server, {
   path: "/socket.io",
   cors: {
-    origin: allowedOrigins,
+    origin: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
   },
@@ -112,20 +98,20 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
-  
+
   socket.on("error", (error) => {
     console.error("Socket error:", error);
   });
-  
+
   socket.on("disconnect", (reason) => {
     console.log(`Client disconnected (${socket.id}):`, reason);
   });
-  
+
   socket.on("joinProject", (projectId) => {
     socket.join(`project_${projectId}`);
     console.log(`Socket ${socket.id} joined room project_${projectId}`);
   });
-  
+
   socket.on("joinUser", (userId) => {
     socket.join(`user_${userId}`);
     console.log(`Socket ${socket.id} joined room user_${userId}`);
@@ -135,6 +121,7 @@ io.on("connection", (socket) => {
 app.locals.io = io;
 module.exports.io = io;
 
+// Start server
 const startServer = async () => {
   try {
     await prisma.$connect();
@@ -142,7 +129,6 @@ const startServer = async () => {
     server.listen(PORT, "0.0.0.0", () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log(`Allowed CORS origins: ${allowedOrigins.join(', ')}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);
@@ -150,9 +136,9 @@ const startServer = async () => {
   }
 };
 
+startServer();
+
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
   process.exit();
 });
-
-startServer();
