@@ -22,7 +22,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ["https://agrimarket-nine.vercel.app"],
+  origin: ["https://agrimarket.pages.dev/"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
