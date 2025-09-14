@@ -22,7 +22,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ["https://agrimarket.pages.dev/"],
+  origin: [
+    "http://localhost:5173",              // local dev
+    "https://agrimarket-nine.vercel.app", // Vercel
+    "https://agrimarket.pages.dev"        // Cloudflare Pages
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
