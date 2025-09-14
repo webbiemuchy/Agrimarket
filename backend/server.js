@@ -25,7 +25,8 @@ app.use(cors({
   origin: [
     "http://localhost:5173",              // local dev
     "https://agrimarket-nine.vercel.app", // Vercel
-    "https://agrimarket.pages.dev"        // Cloudflare Pages
+    "https://agrimarket.pages.dev",      // Cloudflare Pages
+    "https://agrimarket-frontend.onrender.com" //Render
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
