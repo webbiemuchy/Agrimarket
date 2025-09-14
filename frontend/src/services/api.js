@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// Ensure your Vercel env variable is set: VITE_API_BASE_URL=https://agrimarket-1-zdum.onrender.com/api
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+  baseURL: "https://agrimarket-1-zdum.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },
