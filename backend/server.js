@@ -21,15 +21,11 @@ const userRoutes = require("./routes/user");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Relaxed CORS (allow any origin)
-app.use(
-  cors({
-    origin: true, // Reflects request origin
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  })
-);
+app.use(cors({
+  origin: ["https://agrimarket-nine.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 app.use(helmet());
 app.use(morgan("combined"));
