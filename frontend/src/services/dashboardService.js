@@ -2,10 +2,10 @@
 import api from './api';
 
 export const getInvestorDashboard = () =>
-  api.get('/dashboard/investor').then(res => res.data.data);
+  api.get('/dashboard/investor').then(res => res.data);
 
 export const getFarmerDashboard = () =>
-  api.get('/dashboard/farmer').then(res => res.data.data);
+  api.get('/dashboard/farmer').then(res => res.data);
 
 export const getAdminDashboard = () =>
-  api.get('/dashboard/admin').then(res => res.data.data);
+  api.get('/dashboard/admin').then(res => res.data);
