@@ -58,13 +58,13 @@ const DashboardPage = () => {
 
   if (role === 'investor' && investorResult) {
     
-    return <InvestorDashboard {...investorResult.data} />;
+    return <InvestorDashboard {...investorResult} />;
   }
   if (role === 'farmer' && farmerResult) {
-    return <FarmerDashboard {...farmerResult.data} />;
+    return <FarmerDashboard {...farmerResult} />;
   }
   if (role === 'admin' && adminResult) {
-    return <AdminDashboard {...adminResult.data} />;
+    return <AdminDashboard {...adminResult} />;
   }
 
   return <div>Select a dashboard role</div>;
