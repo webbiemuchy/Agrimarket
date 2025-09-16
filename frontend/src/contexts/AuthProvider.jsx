@@ -1,8 +1,11 @@
 // frontend/src/contexts/AuthProvider.jsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import api from "../services/api";
 import { AuthContext } from "./authContextObj";
 import * as openpgp from "openpgp";
+
+// Custom hook for consuming auth context
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -47,13 +50,15 @@ export const AuthProvider = ({ children }) => {
       await saveKeys(privateKey, publicKey);
     }
 
+    // Normalize backend user into frontend user shape
     setUser({
       id: u.id,
       email: u.email,
-      userType: u.user_type,   // ✅ renamed
+      role: u.user_type, // always `role` in frontend
       firstName: u.first_name,
       lastName: u.last_name,
     });
+
     return u;
   };
 
@@ -69,10 +74,11 @@ export const AuthProvider = ({ children }) => {
     setUser({
       id: u.id,
       email: u.email,
-      userType: u.user_type,   // ✅ renamed
+      role: u.user_type,
       firstName: u.first_name,
       lastName: u.last_name,
     });
+
     return u;
   };
 
@@ -102,13 +108,15 @@ export const AuthProvider = ({ children }) => {
             headers: { Authorization: `Bearer ${token}` },
           });
           const u = data.data.user;
+
           setUser({
             id: u.id,
             email: u.email,
-            userType: u.user_type,   // ✅ renamed
+            role: u.user_type, // normalized to `role`
             firstName: u.first_name,
             lastName: u.last_name,
           });
+
           await ensureEncryptionKeys({
             firstName: u.first_name,
             lastName: u.last_name,
