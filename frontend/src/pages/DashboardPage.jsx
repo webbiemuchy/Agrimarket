@@ -1,7 +1,5 @@
-  
 // frontend/src/pages/DashboardPage.jsx
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   getInvestorDashboard,
@@ -11,11 +9,13 @@ import {
 import FarmerDashboard from '../components/dashboard/FarmerDashboard';
 import InvestorDashboard from '../components/dashboard/InvestorDashboard';
 import AdminDashboard from '../components/dashboard/AdminDashboard';
+import { useAuth } from '../contexts/AuthProvider';
 
 const DashboardPage = () => {
-  const { role } = useParams();
+  const { user, loading } = useAuth();
+  const role = user?.userType;
 
- 
+  // queries
   const {
     data: investorResult,
     isLoading: invLoading,
@@ -26,7 +26,6 @@ const DashboardPage = () => {
     enabled: role === 'investor'
   });
 
- 
   const {
     data: farmerResult,
     isLoading: farmLoading,
@@ -36,7 +35,6 @@ const DashboardPage = () => {
     queryFn: () => getFarmerDashboard(),
     enabled: role === 'farmer'
   });
-
 
   const {
     data: adminResult,
@@ -48,7 +46,11 @@ const DashboardPage = () => {
     enabled: role === 'admin'
   });
 
-  
+  // loading state while fetching user
+  if (loading) {
+    return <div>Loading user info…</div>;
+  }
+
   if (invLoading || farmLoading || adminLoading) {
     return <div>Loading dashboard…</div>;
   }
@@ -57,7 +59,6 @@ const DashboardPage = () => {
   }
 
   if (role === 'investor' && investorResult) {
-    
     return <InvestorDashboard {...investorResult} />;
   }
   if (role === 'farmer' && farmerResult) {
@@ -67,7 +68,7 @@ const DashboardPage = () => {
     return <AdminDashboard {...adminResult} />;
   }
 
-  return <div>Select a dashboard role</div>;
+  return <div>No dashboard available</div>;
 };
 
 export default DashboardPage;
