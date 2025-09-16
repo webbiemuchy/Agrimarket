@@ -1,4 +1,4 @@
-//frontend/src/contexts/AuthProvider.jsx
+// frontend/src/contexts/AuthProvider.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import api from "../services/api";
 import { AuthContext } from "./authContextObj";
@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
- 
   const generateKeys = async (email) => {
     const { privateKey, publicKey } = await openpgp.generateKey({
       type: "ecc",
@@ -19,12 +18,13 @@ export const AuthProvider = ({ children }) => {
     return { privateKey, publicKey };
   };
 
-  
   const saveKeys = async (privateKey, publicKey) => {
     localStorage.setItem("privateKey", privateKey);
-    localStorage.setItem("publicKey", publicKey);          
+    localStorage.setItem("publicKey", publicKey);
     try {
-      await api.put("/users/me/publicKey", { publicKey },
+      await api.put(
+        "/users/me/publicKey",
+        { publicKey },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -36,8 +36,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  
-  const login = async ({email, password}) => {
+  const login = async ({ email, password }) => {
     const resp = await api.post("/auth/login", { email, password });
     const { user: u, token } = resp.data.data;
 
@@ -48,20 +47,16 @@ export const AuthProvider = ({ children }) => {
       await saveKeys(privateKey, publicKey);
     }
 
-    
-    setUser(
-      {
-        id: u.id,
-        email: u.email,
-        role: u.user_type,
-        firstName: u.first_name,
-        lastName: u.last_name,
-      }
-    );
+    setUser({
+      id: u.id,
+      email: u.email,
+      userType: u.user_type,   // ✅ renamed
+      firstName: u.first_name,
+      lastName: u.last_name,
+    });
     return u;
   };
 
- 
   const register = async (userData) => {
     const resp = await api.post("/auth/register", userData);
     const { user: u, token } = resp.data.data;
@@ -71,41 +66,33 @@ export const AuthProvider = ({ children }) => {
     const { privateKey, publicKey } = await generateKeys(u.email);
     await saveKeys(privateKey, publicKey);
 
-    
-    setUser(
-      {
-        id: u.id,
-        email: u.email,
-        role: u.user_type,
-        firstName: u.first_name,
-        lastName: u.last_name,
-      }
-    );
+    setUser({
+      id: u.id,
+      email: u.email,
+      userType: u.user_type,   // ✅ renamed
+      firstName: u.first_name,
+      lastName: u.last_name,
+    });
     return u;
   };
 
- 
-  const ensureEncryptionKeys = useCallback(
-    async (currentUser) => {
-      if (!localStorage.getItem("privateKey")) {
-        const { privateKey, publicKey } = await openpgp.generateKey({
-          type: "ecc",
-          curve: "curve25519",
-          userIDs: [
-            {
-              name: `${currentUser.firstName} ${currentUser.lastName}`,
-              email: currentUser.email,
-            },
-          ],
-          format: "armored",
-        });
-        await saveKeys(privateKey, publicKey);
-      }
-    },
-    []
-  );
+  const ensureEncryptionKeys = useCallback(async (currentUser) => {
+    if (!localStorage.getItem("privateKey")) {
+      const { privateKey, publicKey } = await openpgp.generateKey({
+        type: "ecc",
+        curve: "curve25519",
+        userIDs: [
+          {
+            name: `${currentUser.firstName} ${currentUser.lastName}`,
+            email: currentUser.email,
+          },
+        ],
+        format: "armored",
+      });
+      await saveKeys(privateKey, publicKey);
+    }
+  }, []);
 
-  
   useEffect(() => {
     (async () => {
       try {
@@ -118,7 +105,7 @@ export const AuthProvider = ({ children }) => {
           setUser({
             id: u.id,
             email: u.email,
-            role: u.user_type,
+            userType: u.user_type,   // ✅ renamed
             firstName: u.first_name,
             lastName: u.last_name,
           });
@@ -140,14 +127,12 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("privateKey");
-    localStorage.removeItem("publicKey");                   
+    localStorage.removeItem("publicKey");
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, login, register, logout }}
-    >
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
