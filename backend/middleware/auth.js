@@ -91,7 +91,7 @@ const optionalAuth = async (req, res, next) => {
           email: user.email,
           firstName: user.first_name,
           lastName: user.last_name,
-          userType: user.user_type
+          userType: user.user_type.toLowerCase()
         };
       }
     } catch (error) {
